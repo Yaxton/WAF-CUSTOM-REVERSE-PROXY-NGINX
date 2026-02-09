@@ -51,9 +51,9 @@ show_banner() {
     cat << "EOF"
 ╔══════════════════════════════════════════════════════╗
 ║                                                      ║
-║   🛡️  WAF + Nginx Reverse Proxy Installer          ║
+║   WAF + Nginx Reverse Proxy Installer                ║
 ║                                                      ║
-║   Déploiement automatisé et sécurisé                ║
+║   Déploiement automatisé et sécurisé                 ║
 ║                                                      ║
 ╚══════════════════════════════════════════════════════╝
 EOF
@@ -142,42 +142,42 @@ setup_services() {
 show_summary() {
     source "$CONFIG_FILE"
     
-    header "✅ INSTALLATION TERMINÉE"
+    header "INSTALLATION TERMINÉE"
     
     cat << EOF
 ╔══════════════════════════════════════════════════════╗
 ║              RÉSUMÉ DE LA CONFIGURATION              ║
 ╚══════════════════════════════════════════════════════╝
 
-🌐 Configuration réseau :
+ Configuration réseau :
    • WAF écoute sur        : 0.0.0.0:${WAF_PORT}
    • Backend cible         : ${BACKEND_URL}
    • Nginx écoute sur      : ${NGINX_PORT}
 
-🛡️  Sécurité :
+  Sécurité :
    • Anti SQL Injection    : ${ENABLE_SQL_PROTECTION}
    • Anti XSS              : ${ENABLE_XSS_PROTECTION}
    • Anti Path Traversal   : ${ENABLE_PATH_TRAVERSAL}
    • Quantités négatives   : ${ENABLE_NEGATIVE_QTY}
 
-📊 Services :
+ Services :
    • WAF Status    : $(systemctl is-active waf)
    • Nginx Status  : $(systemctl is-active nginx)
 
-📁 Fichiers importants :
+ Fichiers importants :
    • WAF binaire   : /usr/local/bin/waf
    • Config Nginx  : /etc/nginx/nginx.conf
    • Logs WAF      : journalctl -u waf -f
    • Logs Nginx    : /var/log/nginx/
 
-🔧 Commandes utiles :
+ Commandes utiles :
    • Redémarrer WAF   : sudo systemctl restart waf
    • Redémarrer Nginx : sudo systemctl restart nginx
    • Voir logs WAF    : sudo journalctl -u waf -f
    • Tester config    : sudo bash $SCRIPT_DIR/scripts/test_config.sh
 
 ╔══════════════════════════════════════════════════════╗
-║  🎉 Votre WAF est maintenant opérationnel !         ║
+║   Votre WAF est maintenant opérationnel !            ║
 ╚══════════════════════════════════════════════════════╝
 
 EOF

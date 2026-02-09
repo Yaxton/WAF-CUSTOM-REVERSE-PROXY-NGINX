@@ -5,7 +5,7 @@ Déployez automatiquement un Web Application Firewall (WAF) avec Nginx en revers
 ### Installation rapide
 
 ```bash
-git clone https://github.com/votre-username/waf-nginx-deployment.git
+git clone https://github.com/Yaxton/waf-custom-reverse-proxy-nginx.git
 cd waf-nginx-deployment
 sudo chmod +x install.sh
 sudo ./install.sh

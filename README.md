@@ -1,8 +1,8 @@
-# 🛡️ WAF + Nginx Reverse Proxy - Déploiement Automatisé
+# WAF + Nginx Reverse Proxy - Déploiement Automatisé
 
 Déployez automatiquement un Web Application Firewall (WAF) avec Nginx en reverse proxy.
 
-## 🚀 Installation rapide
+### Installation rapide
 
 ```bash
 git clone https://github.com/votre-username/waf-nginx-deployment.git
@@ -10,13 +10,13 @@ cd waf-nginx-deployment
 sudo chmod +x install.sh
 sudo ./install.sh
 
-📋 Prérequis
+### Prérequis
 
 Ubuntu/Debian ou CentOS/RHEL
 Accès root (sudo)
 Connexion internet
 
-⚙️ Ce qui sera installé
+### Ce qui sera installé
 
 Nginx
 Go 1.23.4
@@ -30,7 +30,7 @@ Port du backend
 Port d'écoute du WAF
 Règles de sécurité personnalisées
 
-🎯 Utilisation complète :
+### Utilisation complète :
 
 # 1. Cloner le repo
 git clone https://github.com/votre-username/waf-nginx-deployment.git
@@ -43,7 +43,7 @@ chmod +x scripts/*.sh
 # 3. Lancer l'installation
 sudo ./install.sh
 
-📊 Commandes de gestion post-installation :
+### Commandes de gestion post-installation :
 
 # Redémarrer le WAF
 sudo systemctl restart waf

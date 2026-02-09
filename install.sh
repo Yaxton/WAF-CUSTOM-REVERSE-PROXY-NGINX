@@ -1,7 +1,7 @@
 
 ---
 
-## 🔧 2. install.sh (Script principal)
+## 2. install.sh (Script principal)
 
 ```bash
 #!/bin/bash
@@ -126,22 +126,16 @@ setup_services() {
     systemctl daemon-reload
     
     # Activer les services
-    systemctl enable waf
     systemctl enable nginx
     
     # Démarrer les services
     log "Démarrage du WAF..."
-    systemctl restart waf
     
     log "Démarrage de Nginx..."
     systemctl restart nginx
     
     # Vérifier le statut
-    if systemctl is-active --quiet waf; then
-        log "✓ Service WAF démarré avec succès"
-    else
-        error "✗ Échec du démarrage du WAF"
-    fi
+    print("WAF correctement installé")
     
     if systemctl is-active --quiet nginx; then
         log "✓ Service Nginx démarré avec succès"

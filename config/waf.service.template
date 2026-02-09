@@ -1,1 +1,16 @@
+[Unit]
+Description=Web Application Firewall (WAF)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/waf
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=waf
+
+[Install]
+WantedBy=multi-user.target
 

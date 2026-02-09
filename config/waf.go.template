@@ -1,1 +1,97 @@
+package main
+
+import (
+    "bytes"
+    "io"
+    "log"
+    "net/http"
+    "net/http/httputil"
+    "net/url"
+    "regexp"
+    "strings"
+)
+
+var dangerousPatterns = []*regexp.Regexp{
+{{PATTERNS}}
+}
+
+func wafMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        path := r.URL.Path
+        query := r.URL.RawQuery
+        fullURL := r.URL.String()
+
+        // Anti-Directory Listing
+        if strings.HasSuffix(path, "/") &&
+           !strings.Contains(path, "api") &&
+           path != "/" &&
+           !strings.Contains(path, "socket.io") {
+            log.Printf("[BLOCKED] %s %s%s - Directory listing attempt", r.Method, r.Host, r.URL)
+            http.Error(w, "403 Forbidden", http.StatusForbidden)
+            return
+        }
+
+        // Bloquer fichiers sensibles
+        sensitivePaths := []string{".map", ".bak", ".old", ".backup", "package.json"}
+        for _, sensitive := range sensitivePaths {
+            if strings.Contains(strings.ToLower(path), sensitive) {
+                log.Printf("[BLOCKED] %s %s%s - Sensitive file", r.Method, r.Host, r.URL)
+                http.Error(w, "403 Forbidden", http.StatusForbidden)
+                return
+            }
+        }
+
+        // Décoder URL
+        decodedPath, _ := url.QueryUnescape(path)
+        decodedQuery, _ := url.QueryUnescape(query)
+        decodedFull := decodedPath + "?" + decodedQuery
+
+        dataToCheck := []string{query, path, fullURL, decodedPath, decodedQuery, decodedFull}
+
+        // Lire le body
+        var bodyBytes []byte
+        if r.Method == "POST" || r.Method == "PUT" || r.Method == "PATCH" {
+            bodyBytes, _ = io.ReadAll(r.Body)
+            r.Body.Close()
+            r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+            dataToCheck = append(dataToCheck, string(bodyBytes))
+        }
+
+        // Vérifier les patterns
+        for _, data := range dataToCheck {
+            for _, pattern := range dangerousPatterns {
+                if pattern.MatchString(data) {
+                    log.Printf("[BLOCKED] %s %s%s - Pattern detected", r.Method, r.Host, r.URL)
+                    http.Error(w, "403 Forbidden", http.StatusForbidden)
+                    return
+                }
+            }
+        }
+
+        // Paths suspects
+        suspiciousPaths := []string{"etc/passwd", "etc/shadow", "windows/system32"}
+        for _, suspicious := range suspiciousPaths {
+            if strings.Contains(strings.ToLower(path), suspicious) ||
+               strings.Contains(strings.ToLower(decodedPath), suspicious) {
+                log.Printf("[BLOCKED] %s %s%s - Suspicious path", r.Method, r.Host, r.URL)
+                http.Error(w, "403 Forbidden", http.StatusForbidden)
+                return
+            }
+        }
+
+        log.Printf("[ALLOWED] %s %s%s", r.Method, r.Host, r.URL)
+        next.ServeHTTP(w, r)
+    })
+}
+
+func main() {
+    backendURL, _ := url.Parse("{{BACKEND_URL}}")
+    proxy := httputil.NewSingleHostReverseProxy(backendURL)
+
+    http.Handle("/", wafMiddleware(proxy))
+
+    log.Println("WAF running on :{{WAF_PORT}}")
+    log.Printf("Forwarding to %s\n", backendURL)
+    log.Fatal(http.ListenAndServe(":{{WAF_PORT}}", nil))
+}
 

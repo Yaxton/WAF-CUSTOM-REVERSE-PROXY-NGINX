@@ -1,0 +1,16 @@
+# Configuration générée
+.waf_config
+.os_info
+
+# Logs
+*.log
+
+# Binaires
+waf
+config/waf.go
+config/waf.service
+
+# Temporaires
+*.tmp
+*.swp
+*~
